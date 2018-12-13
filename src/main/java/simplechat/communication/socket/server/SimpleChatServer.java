@@ -95,6 +95,7 @@ public class SimpleChatServer extends Thread {
      * @param worker   ClientWorker Thread which was initiating the renaming
      */
     void setName(String chatName, ClientWorker worker) {
+        workerList.replace(worker, workerList.get(worker),chatName);
     }
 
     /**

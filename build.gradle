@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'application'
     id 'idea'
-    id 'eclipse'
     id 'jacoco'
 }
 
