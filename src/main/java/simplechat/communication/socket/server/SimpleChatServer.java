@@ -59,6 +59,18 @@ public class SimpleChatServer extends Thread {
      */
     public void run() {
         SimpleChat.serverLogger.log(INFO, "... starting Thread ...");
+        while(listening) {
+            try {
+                serverSocket = new ServerSocket(port, backlog);
+                Socket s = serverSocket.accept();
+                ClientWorker cw = new ClientWorker(s,this);
+                String name = server.addClient("");
+                workerList.put(cw, name);
+                executorService.execute(cw);
+            } catch (IOException e) {
+                SimpleChat.serverLogger.log(WARNING, e.toString());
+            }
+        }
     }
 
     /**

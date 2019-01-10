@@ -65,6 +65,15 @@ public class SimpleChatClient extends Thread {
      * the {@link #shutdown()} method will be called.
      */
     public void run() {
+        try {
+            socket = new Socket();
+            socketAddress = new InetSocketAddress(host, port);
+            socket.connect(socketAddress,2000);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            SimpleChat.clientLogger.log(WARNING, e.toString());
+        }
     }
 
     /**
