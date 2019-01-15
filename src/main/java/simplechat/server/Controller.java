@@ -49,12 +49,15 @@ public class Controller {
     }
 
     public void updateTextAreaWithText(String text) {
+        textArea.setText(text);
     }
 
     public void addUser(String user) {
+        listView.getItems().add(user);
     }
 
     public void removeUser(String user) {
+        listView.getItems().remove(user);
     }
 
     Runnable clearText = () -> {

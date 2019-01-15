@@ -144,7 +144,9 @@ public class SimpleChat {
      */
     public void sendMessage(String message, String chatName) {
         serverLogger.log(INFO, "UI gave me this message: " + message + " for this user: " + chatName);
-        this.server.send(message, chatName);
+        if (this.isConnected()) {
+            this.server.send(message, chatName);
+        }
     }
 
     /**
@@ -153,6 +155,8 @@ public class SimpleChat {
      * @param message Message sent by Client
      */
     public void incomingMessage(String message) {
+        this.receivedMessages.add(message);
+
     }
 
     /**
@@ -185,6 +189,9 @@ public class SimpleChat {
      * or an adapted new name (e.g. Franz#1)
      */
     public synchronized String renameClient(String oldChatName, String newChatName) {
+        if (users.remove(oldChatName)) {
+            this.addClient(newChatName);
+        }
         return null;
     }
 
@@ -196,6 +203,9 @@ public class SimpleChat {
      * @param chatName Client which will be removed from Userlist
      */
     public void removeClient(String chatName) {
+        if (this.users.remove(chatName)) {
+            this.controller.removeUser(chatName);
+        }
     }
 
     /**
@@ -205,6 +215,8 @@ public class SimpleChat {
      * @param chatName Client which will be informed of shutdown
      */
     public void shutdownClient(String chatName) {
+        this.server.removeClient(chatName);
+        removeClient(chatName);
     }
 
     /**
