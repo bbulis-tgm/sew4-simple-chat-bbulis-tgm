@@ -6,10 +6,7 @@ import simplechat.server.SimpleChat;
 import static java.util.logging.Level.*;
 import static simplechat.communication.MessageProtocol.Commands.EXIT;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -158,6 +155,18 @@ class ClientWorker implements Runnable {
      * @throws IOException will be throwed if the init of Input- or OutputStream fails
      */
     ClientWorker(Socket client, SimpleChatServer callback) throws IOException {
+        this.client = client;
+        this.callback = callback;
+        try {
+            out = new PrintWriter(
+                    client.getOutputStream(),true);
+            in = new BufferedReader(
+                    new InputStreamReader(
+                            client.getInputStream()));
+
+        } catch (IOException io) {
+            SimpleChat.serverLogger.log(WARNING, io.toString());
+        }
     }
 
     /**
@@ -169,6 +178,13 @@ class ClientWorker implements Runnable {
      */
     @Override
     public void run() {
+        try {
+            if (listening == true && in.readLine() != null) {
+
+            }
+        } catch (IOException e) {
+            SimpleChat.serverLogger.log(WARNING, e.toString());
+        }
     }
 
     /**
@@ -187,5 +203,7 @@ class ClientWorker implements Runnable {
      * @param message MessageText for Client
      */
     void send(String message) {
+        out.println(message);
+        SimpleChat.serverLogger.log(INFO, "Message Send");
     }
 }

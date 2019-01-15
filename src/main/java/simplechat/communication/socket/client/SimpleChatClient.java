@@ -88,6 +88,13 @@ public class SimpleChatClient extends Thread {
      * the message will be passed to {@link simplechat.client.SimpleChat#incomingMessage(String)}
      */
     private void received() {
+        try {
+            if (in.readLine().substring(0,1) == "!") {
+
+            }
+        } catch (IOException e) {
+            SimpleChat.clientLogger.log(WARNING, e.toString());
+        }
     }
 
     /**
@@ -115,6 +122,12 @@ public class SimpleChatClient extends Thread {
      */
     public void shutdown() {
         SimpleChat.clientLogger.log(INFO, "Shutting down Client ... listening=" + listening);
+        out.close();
+        try {
+            in.close();
+        } catch (IOException e) {
+            SimpleChat.clientLogger.log(WARNING, e.toString());
+        }
     }
 
     /**

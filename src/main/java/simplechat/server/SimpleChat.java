@@ -119,7 +119,7 @@ public class SimpleChat {
      * @return checks if server Thread is still alive
      */
     public boolean isConnected() {
-        return false;
+        return this.server.isAlive();
     }
 
     /**
