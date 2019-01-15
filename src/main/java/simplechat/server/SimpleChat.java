@@ -107,12 +107,14 @@ public class SimpleChat {
      */
     public void listen() {
         serverLogger.log(INFO, "Initiating SimpleChatServer ...");
+        this.server.start();
     }
 
     /**
      * Gracefully shutdown of server Thread calling {@link SimpleChatServer#shutdown()}
      */
     public void stop() {
+        this.server.shutdown();
     }
 
     /**
@@ -129,6 +131,9 @@ public class SimpleChat {
      */
     public void sendMessage(String message) {
         serverLogger.log(INFO, "UI gave me this message: " + message);
+        if(this.isConnected()) {
+            this.server.send(message);
+        }
     }
 
     /**
@@ -139,6 +144,7 @@ public class SimpleChat {
      */
     public void sendMessage(String message, String chatName) {
         serverLogger.log(INFO, "UI gave me this message: " + message + " for this user: " + chatName);
+        this.server.send(message, chatName);
     }
 
     /**
