@@ -77,6 +77,8 @@ public class SimpleChatServer extends Thread {
      * @param sender       {@link ClientWorker} which received the message
      */
     public void received(String plainMessage, ClientWorker sender) {
+        String message = "[" + this.workerList.get(sender) + "]: " + plainMessage;
+        send(message);
     }
 
     /**
@@ -85,6 +87,9 @@ public class SimpleChatServer extends Thread {
      * @param message MessageText with sender ChatName
      */
     public void send(String message) {
+        for (ClientWorker worker: this.workerList.keySet()) {
+            worker.send(message);
+        }
     }
 
     /**
@@ -180,7 +185,7 @@ class ClientWorker implements Runnable {
     public void run() {
         try {
             if (listening == true && in.readLine() != null) {
-
+                callback.received(in.readLine(), this);
             }
         } catch (IOException e) {
             SimpleChat.serverLogger.log(WARNING, e.toString());
@@ -194,6 +199,14 @@ class ClientWorker implements Runnable {
      * Finally we are closing all open resources.
      */
     void shutdown() {
+        try {
+            in.close();
+            out.close();
+            listening = false;
+            client.close();
+        } catch (Exception e) {
+            SimpleChat.serverLogger.log(WARNING, e.toString());
+        }
         SimpleChat.serverLogger.log(INFO, "Shutting down ClientWorker ... listening=" + listening);
     }
 
@@ -203,7 +216,11 @@ class ClientWorker implements Runnable {
      * @param message MessageText for Client
      */
     void send(String message) {
-        out.println(message);
+        try {
+            out.println(message);
+        } catch (Exception e) {
+            SimpleChat.serverLogger.log(WARNING, e.toString());
+        }
         SimpleChat.serverLogger.log(INFO, "Message Send");
     }
 }
