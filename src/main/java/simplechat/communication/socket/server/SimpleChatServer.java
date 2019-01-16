@@ -98,7 +98,12 @@ public class SimpleChatServer extends Thread {
      * @param message  MessageText with sender ChatName
      * @param receiver ChatName of receiving Client
      */
-    public void send(String message, Object receiver) {
+    public void send(String message, String receiver) {
+        for(ClientWorker worker: this.workerList.keySet()) {
+            if (this.workerList.get(worker).equals(receiver)) {
+                worker.send(message);
+            }
+        }
     }
 
     /**
