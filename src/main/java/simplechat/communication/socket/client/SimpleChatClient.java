@@ -90,7 +90,7 @@ public class SimpleChatClient extends Thread {
     private void received() {
         try {
             if (in.readLine().substring(0,1) == "!") {
-
+                this.client.incomingMessage(in.readLine());
             }
         } catch (IOException e) {
             SimpleChat.clientLogger.log(WARNING, e.toString());
