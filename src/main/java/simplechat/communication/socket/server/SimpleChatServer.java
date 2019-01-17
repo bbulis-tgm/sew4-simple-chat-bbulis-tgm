@@ -124,6 +124,12 @@ public class SimpleChatServer extends Thread {
      * @param worker ClientWorker which should be removed
      */
     void removeClient(ClientWorker worker) {
+        for(ClientWorker workerTmp : this.workerList.keySet()) {
+            if (this.workerList.get(workerTmp).equals(worker)) {
+                workerTmp.shutdown();
+                workerList.remove(workerTmp);
+            }
+        }
     }
 
     /**
