@@ -77,7 +77,7 @@ public class SimpleChatServer extends Thread {
      * @param sender       {@link ClientWorker} which received the message
      */
     public void received(String plainMessage, ClientWorker sender) {
-        String message = "[" + this.workerList.get(sender) + "]: " + plainMessage;
+        String message = MessageProtocol.textMessage(plainMessage, workerList.get(sender));
         send(message);
     }
 
