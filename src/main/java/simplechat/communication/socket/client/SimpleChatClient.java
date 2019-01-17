@@ -103,6 +103,7 @@ public class SimpleChatClient extends Thread {
      * @param message Public message for server intercommunication
      */
     public void send(String message) {
+
     }
 
     /**

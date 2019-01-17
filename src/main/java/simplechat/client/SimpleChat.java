@@ -123,6 +123,7 @@ public class SimpleChat {
      */
     public void sendMessage(String message) {
         clientLogger.log(INFO, "UI gave me this message: " + message);
+
     }
 
     /**
