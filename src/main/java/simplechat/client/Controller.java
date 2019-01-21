@@ -37,6 +37,7 @@ public class Controller {
     }
 
     public void stop() {
+        simpleChat.stop();
     }
 
     public void setSimpleChat(SimpleChat simpleChat) {
@@ -44,12 +45,15 @@ public class Controller {
     }
 
     public void updateTextAreaWithText(String text) {
-        this.textArea.setText(text);
+        this.textArea.setText(textArea.getText() + "\n" + text);
     }
 
     public void sendMessage() {
-        this.simpleChat.sendMessage(this.textField.getText());
-        this.textField.setText("");
+        String msg = this.textField.getText();
+        if(!msg.trim().isEmpty()) {
+            this.simpleChat.sendMessage(msg);
+            this.textField.setText("");
+        }
     }
 
     Runnable clearText = () -> {

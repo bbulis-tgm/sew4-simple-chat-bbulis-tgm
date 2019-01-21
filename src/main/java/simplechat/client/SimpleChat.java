@@ -101,19 +101,21 @@ public class SimpleChat {
      */
     public void listen() {
         clientLogger.log(INFO, "Initiating SimpleChatClient ...");
+        this.client.start();
     }
 
     /**
      * Gracefully shutdown of client Thread calling {@link SimpleChatClient#shutdown()}
      */
     public void stop() {
+        this.client.shutdown();
     }
 
     /**
      * @return checks if client Thread is still alive
      */
     public boolean isConnected() {
-        return false;
+        return client.isListening();
     }
 
     /**
@@ -123,7 +125,9 @@ public class SimpleChat {
      */
     public void sendMessage(String message) {
         clientLogger.log(INFO, "UI gave me this message: " + message);
-        this.client.send(message);
+        if (isConnected()) {
+            client.send(message);
+        }
     }
 
     /**
@@ -134,6 +138,9 @@ public class SimpleChat {
      */
     public void sendMessage(String message, String chatName) {
         clientLogger.log(INFO, "UI gave me this message: " + message + " for this user: " + chatName);
+        if (isConnected()) {
+            client.send(message, chatName);
+        }
     }
 
     /**
@@ -143,6 +150,7 @@ public class SimpleChat {
      * @param message Message sent by Server
      */
     public void incomingMessage(String message) {
+        controller.updateTextAreaWithText(message);
     }
 
 }

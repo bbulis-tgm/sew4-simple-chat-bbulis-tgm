@@ -195,7 +195,7 @@ class ClientWorker implements Runnable {
     @Override
     public void run() {
         try {
-            if (listening == true && in.readLine() != null) {
+            while (listening && in.readLine() != null) {
                 callback.received(in.readLine(), this);
             }
         } catch (IOException e) {
