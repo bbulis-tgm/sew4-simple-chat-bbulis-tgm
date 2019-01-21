@@ -46,6 +46,7 @@ public class SimpleChatServer extends Thread {
         if (host != null) this.host = host;
         if (port != null) this.port = port;
         this.server = server;
+        this.listening = true;
         SimpleChat.serverLogger.log(INFO, "Init: host=" + this.host + " port=" + this.port);
     }
 
@@ -56,11 +57,15 @@ public class SimpleChatServer extends Thread {
      */
     public void run() {
         SimpleChat.serverLogger.log(INFO, "... starting Thread ...");
-        while(listening) {
+        try {
+            serverSocket = new ServerSocket(port, backlog);
+        } catch (IOException e) {
+            SimpleChat.serverLogger.log(WARNING, e.toString());
+        }
+        while (listening) {
             try {
-                serverSocket = new ServerSocket(port, backlog);
                 Socket s = serverSocket.accept();
-                ClientWorker cw = new ClientWorker(s,this);
+                ClientWorker cw = new ClientWorker(s, this);
                 String name = server.addClient("");
                 workerList.put(cw, name);
                 executorService.execute(cw);
@@ -87,7 +92,7 @@ public class SimpleChatServer extends Thread {
      * @param message MessageText with sender ChatName
      */
     public void send(String message) {
-        for (ClientWorker worker: this.workerList.keySet()) {
+        for (ClientWorker worker : this.workerList.keySet()) {
             worker.send(message);
         }
     }
@@ -99,7 +104,7 @@ public class SimpleChatServer extends Thread {
      * @param receiver ChatName of receiving Client
      */
     public void send(String message, String receiver) {
-        for(ClientWorker worker: this.workerList.keySet()) {
+        for (ClientWorker worker : this.workerList.keySet()) {
             if (this.workerList.get(worker).equals(receiver)) {
                 worker.send(message);
             }
@@ -114,7 +119,7 @@ public class SimpleChatServer extends Thread {
      * @param worker   ClientWorker Thread which was initiating the renaming
      */
     void setName(String chatName, ClientWorker worker) {
-        workerList.replace(worker, workerList.get(worker),chatName);
+        workerList.replace(worker, workerList.get(worker), chatName);
     }
 
     /**
@@ -124,7 +129,7 @@ public class SimpleChatServer extends Thread {
      * @param worker ClientWorker which should be removed
      */
     void removeClient(ClientWorker worker) {
-        for(ClientWorker workerTmp : this.workerList.keySet()) {
+        for (ClientWorker workerTmp : this.workerList.keySet()) {
             if (this.workerList.get(workerTmp).equals(worker)) {
                 workerTmp.shutdown();
                 workerList.remove(workerTmp);
@@ -148,6 +153,17 @@ public class SimpleChatServer extends Thread {
      * active ClientWorker Threads.
      */
     public void shutdown() {
+        listening = false;
+        executorService.shutdown();
+        for (ClientWorker cw : workerList.keySet()) {
+            cw.shutdown();
+        }
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            SimpleChat.serverLogger.log(WARNING, e.toString());
+        }
+        executorService.shutdownNow();
     }
 }
 
@@ -175,7 +191,7 @@ class ClientWorker implements Runnable {
         this.callback = callback;
         try {
             out = new PrintWriter(
-                    client.getOutputStream(),true);
+                    client.getOutputStream(), true);
             in = new BufferedReader(
                     new InputStreamReader(
                             client.getInputStream()));
@@ -194,13 +210,16 @@ class ClientWorker implements Runnable {
      */
     @Override
     public void run() {
+
         try {
-            while (listening && in.readLine() != null) {
-                callback.received(in.readLine(), this);
+            String msg = in.readLine();
+            while (listening && msg != null) {
+                callback.received(msg, this);
             }
         } catch (IOException e) {
             SimpleChat.serverLogger.log(WARNING, e.toString());
         }
+
     }
 
     /**

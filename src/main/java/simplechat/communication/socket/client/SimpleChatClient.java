@@ -93,11 +93,10 @@ public class SimpleChatClient extends Thread {
      */
     private void received() {
         try {
-            String msg = in.readLine();
-            if (!msg.startsWith("!")) {
-                this.client.incomingMessage(in.readLine());
+            if (!currentMessage.startsWith("!")) {
+                this.client.incomingMessage(currentMessage);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             SimpleChat.clientLogger.log(WARNING, e.toString());
         }
     }
