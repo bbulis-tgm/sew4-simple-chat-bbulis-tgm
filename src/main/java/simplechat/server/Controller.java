@@ -34,7 +34,8 @@ public class Controller {
 
     @FXML
     protected void handleMessageButtonAction(ActionEvent event) {
-        this.simpleChat.sendMessage(this.textField.getText());
+        event.consume();
+        this.simpleChat.sendMessage("[Server] " + this.textField.getText());
         this.textField.setText("");
     }
 
