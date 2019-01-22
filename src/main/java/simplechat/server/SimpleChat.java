@@ -179,6 +179,10 @@ public class SimpleChat {
      */
     public synchronized String addClient(String chatName) {
         String name = chatName.equals("") ? "Client" : chatName;
+        if (!users.contains(name)) {
+            name = name + " #" + (users.size()+1);
+            users.add(name);
+        }
         return name;
     }
 
@@ -193,6 +197,8 @@ public class SimpleChat {
     public synchronized String renameClient(String oldChatName, String newChatName) {
         if (users.remove(oldChatName)) {
             this.addClient(newChatName);
+        } else if (oldChatName.equals(newChatName)) {
+            return oldChatName;
         }
         return null;
     }

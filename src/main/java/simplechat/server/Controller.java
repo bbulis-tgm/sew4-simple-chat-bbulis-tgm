@@ -8,6 +8,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import simplechat.communication.MessageProtocol;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -53,16 +54,17 @@ public class Controller {
     }
 
     public void updateTextAreaWithText(String text) {
-        textArea.setText(textArea.getText() + "\n" + text);
+        String msg = MessageProtocol.textMessage(text, "Server");
+        textArea.setText(textArea.getText() + "\n" + msg);
         textArea.setScrollTop(Double.MAX_VALUE);
     }
 
     public void addUser(String user) {
-        listView.getItems().add(user);
+        Platform.runLater(()->listView.getItems().add(user));
     }
 
     public void removeUser(String user) {
-        listView.getItems().remove(user);
+        Platform.runLater(()->listView.getItems().remove(user));
     }
 
     Runnable clearText = () -> {
