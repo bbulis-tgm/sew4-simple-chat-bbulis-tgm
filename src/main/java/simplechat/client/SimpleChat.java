@@ -150,7 +150,9 @@ public class SimpleChat {
      * @param message Message sent by Server
      */
     public void incomingMessage(String message) {
-        controller.updateTextAreaWithText(message);
+        if (!(this.controller == null)) {
+            controller.updateTextAreaWithText(message);
+        }
     }
 
 }
