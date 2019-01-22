@@ -54,8 +54,7 @@ public class Controller {
     }
 
     public void updateTextAreaWithText(String text) {
-        String msg = MessageProtocol.textMessage(text, "Server");
-        textArea.setText(textArea.getText() + "\n" + msg);
+        textArea.setText(textArea.getText() + "\n" + text);
         textArea.setScrollTop(Double.MAX_VALUE);
     }
 

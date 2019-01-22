@@ -127,11 +127,12 @@ public class SimpleChatClient extends Thread {
      * Finally we are closing all open resources.
      */
     public void shutdown() {
-        SimpleChat.clientLogger.log(INFO, "Shutting down Client ... listening=" + listening);
+        listening = false;
         try {
             in.close();
             out.close();
             socket.close();
+            SimpleChat.clientLogger.log(INFO, "Shutting down Client ... listening=" + listening);
         } catch (IOException e) {
             SimpleChat.clientLogger.log(WARNING, e.toString());
         }

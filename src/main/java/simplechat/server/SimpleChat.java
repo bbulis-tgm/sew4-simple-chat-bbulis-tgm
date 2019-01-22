@@ -1,5 +1,6 @@
 package simplechat.server;
 
+import simplechat.communication.MessageProtocol;
 import simplechat.communication.socket.server.SimpleChatServer;
 
 import org.apache.commons.cli.*;
@@ -132,8 +133,10 @@ public class SimpleChat {
     public void sendMessage(String message) {
         serverLogger.log(INFO, "UI gave me this message: " + message);
         if(this.isConnected()) {
+            if (!message.startsWith("[Client")) {
+                message = MessageProtocol.textMessage(message, "Server");
+            }
             this.server.send(message);
-            this.controller.updateTextAreaWithText(message);
             this.sentMessages.add(message);
         }
     }
@@ -157,6 +160,7 @@ public class SimpleChat {
      * @param message Message sent by Client
      */
     public void incomingMessage(String message) {
+        this.controller.updateTextAreaWithText(message);
         this.receivedMessages.add(message);
 
     }
