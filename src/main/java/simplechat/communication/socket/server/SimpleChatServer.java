@@ -83,7 +83,7 @@ public class SimpleChatServer extends Thread {
      */
     public void received(String plainMessage, ClientWorker sender) {
         String message = MessageProtocol.textMessage(plainMessage, workerList.get(sender));
-        send(message);
+        this.server.sendMessage(message);
     }
 
     /**
@@ -212,8 +212,8 @@ class ClientWorker implements Runnable {
     public void run() {
 
         try {
-            String msg = in.readLine();
-            while (listening && msg != null) {
+            String msg;
+            while (listening && (msg = in.readLine()) != null) {
                 callback.received(msg, this);
             }
         } catch (IOException e) {

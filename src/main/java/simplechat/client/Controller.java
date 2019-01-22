@@ -46,6 +46,7 @@ public class Controller {
 
     public void updateTextAreaWithText(String text) {
         this.textArea.setText(textArea.getText() + "\n" + text);
+        textArea.setScrollTop(Double.MAX_VALUE);
     }
 
     public void sendMessage() {

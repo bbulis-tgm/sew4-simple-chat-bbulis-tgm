@@ -47,7 +47,7 @@ public class SimpleChat {
         serverLogger.setLevel(FINE);
         serverLogger.setUseParentHandlers(false);
         ConsoleHandler ch = new ConsoleHandler();
-        ch.setLevel(SEVERE);
+        ch.setLevel(ALL);
         serverLogger.addHandler(ch);
 
         CommandLineParser parser = new DefaultParser();
@@ -133,6 +133,8 @@ public class SimpleChat {
         serverLogger.log(INFO, "UI gave me this message: " + message);
         if(this.isConnected()) {
             this.server.send(message);
+            this.controller.updateTextAreaWithText(message);
+            this.sentMessages.add(message);
         }
     }
 

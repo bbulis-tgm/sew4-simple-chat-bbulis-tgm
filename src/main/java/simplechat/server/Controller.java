@@ -53,7 +53,8 @@ public class Controller {
     }
 
     public void updateTextAreaWithText(String text) {
-        textArea.setText(text);
+        textArea.setText(textArea.getText() + "\n" + text);
+        textArea.setScrollTop(Double.MAX_VALUE);
     }
 
     public void addUser(String user) {
