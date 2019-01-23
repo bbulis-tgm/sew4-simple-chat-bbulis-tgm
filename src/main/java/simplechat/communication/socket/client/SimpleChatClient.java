@@ -1,5 +1,6 @@
 package simplechat.communication.socket.client;
 
+import javafx.application.Platform;
 import simplechat.client.SimpleChat;
 import simplechat.communication.MessageProtocol;
 
@@ -96,6 +97,11 @@ public class SimpleChatClient extends Thread {
             SimpleChat.clientLogger.log(INFO, "recieved "+currentMessage);
             if (!currentMessage.startsWith("!")) {
                 this.client.incomingMessage(currentMessage);
+            } else {
+                switch (MessageProtocol.getCommand(currentMessage)) {
+                    case EXIT:
+                        Platform.exit();
+                }
             }
         } catch (Exception e) {
             SimpleChat.clientLogger.log(WARNING, e.toString());
