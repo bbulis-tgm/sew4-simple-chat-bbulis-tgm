@@ -82,8 +82,16 @@ public class SimpleChatServer extends Thread {
      * @param sender       {@link ClientWorker} which received the message
      */
     public void received(String plainMessage, ClientWorker sender) {
-        String message = MessageProtocol.textMessage(plainMessage,workerList.get(sender));
-        //this.server.incomingMessage(message);
+        String message = "";
+        if (!plainMessage.startsWith("!")) {
+            message = MessageProtocol.textMessage(plainMessage, workerList.get(sender));
+        } else {
+            switch (MessageProtocol.getCommand(plainMessage)) {
+                case EXIT:
+                    this.server.removeClient(workerList.get(sender));
+                    this.send(MessageProtocol.getMessage(EXIT), workerList.get(sender));
+            }
+        }
         this.server.sendMessage(message);
     }
 
@@ -145,6 +153,7 @@ public class SimpleChatServer extends Thread {
      * @param chatName Client name which should be removed
      */
     public void removeClient(String chatName) {
+
     }
 
     /**
@@ -232,13 +241,9 @@ class ClientWorker implements Runnable {
         listening = false;
         this.send(MessageProtocol.getMessage(EXIT));
         try {
-            SimpleChat.serverLogger.log(INFO, "Test1");
             out.close();
-            SimpleChat.serverLogger.log(INFO, "Test2");
             in.close();
-            SimpleChat.serverLogger.log(INFO, "Test3");
             client.close();
-            SimpleChat.serverLogger.log(INFO, "Test4");
         } catch (Exception e) {
             SimpleChat.serverLogger.log(WARNING, e.toString());
         }
@@ -253,9 +258,9 @@ class ClientWorker implements Runnable {
     void send(String message) {
         try {
             out.println(message);
+            SimpleChat.serverLogger.log(INFO, "Message Send");
         } catch (Exception e) {
             SimpleChat.serverLogger.log(WARNING, e.toString());
         }
-        SimpleChat.serverLogger.log(INFO, "Message Send");
     }
 }
