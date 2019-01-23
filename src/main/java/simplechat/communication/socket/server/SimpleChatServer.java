@@ -228,11 +228,17 @@ class ClientWorker implements Runnable {
      * Finally we are closing all open resources.
      */
     void shutdown() {
+        SimpleChat.serverLogger.log(INFO, "Shutting down ClientWorker ... listening=" + listening);
+        listening = false;
+        this.send(MessageProtocol.getMessage(EXIT));
         try {
-            in.close();
+            SimpleChat.serverLogger.log(INFO, "Test1");
             out.close();
-            listening = false;
+            SimpleChat.serverLogger.log(INFO, "Test2");
+            in.close();
+            SimpleChat.serverLogger.log(INFO, "Test3");
             client.close();
+            SimpleChat.serverLogger.log(INFO, "Test4");
         } catch (Exception e) {
             SimpleChat.serverLogger.log(WARNING, e.toString());
         }
