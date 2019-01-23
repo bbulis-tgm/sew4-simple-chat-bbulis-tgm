@@ -184,6 +184,7 @@ public class SimpleChat {
         if (!users.contains(name)) {
             name = name + " #" + (users.size()+1);
             users.add(name);
+            controller.addUser(name);
         }
         return name;
     }
